@@ -15,22 +15,28 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
         integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
         crossorigin="" />
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
         integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
         crossorigin=""></script>
     <script src="app.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=DM+Sans:400,700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <h1>Oh hey it's my map</h1>
+    <div class=wrap>
+        <h1>“Walking While Trans” Arrests, <div class="reg">2006-present</div>
+        </h1>
+    </div>
     <div id="mapid"></div>
 
-    <!-- initialize the map and set its center point and zoom level -->
     <script>
+        // initialize the map and set its center point and zoom level
         var mymap = L.map('mapid').setView([40.7128, -74.0060], 11.2);
 
-        //add a tile layer from mapbox
+        // add a tile layer from mapbox
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,
@@ -38,51 +44,23 @@
             accessToken: 'pk.eyJ1IjoibGl2aWF0cm9uaWMiLCJhIjoiNmtHZGN4YyJ9.NqfhK8hqkAZnL1Vr_OuZjQ'
         }).addTo(mymap);
 
-        var circle = L.circle([40.691363012, -73.7967679169999], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 200,
-            stroke: false
-        }).addTo(mymap);
+        // access the json data file
+        $.getJSON("/assets/nypd.json", function (json) {
 
-        var circle = L.circle([40.71496615, -74.0056540279999], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 200,
-            stroke: false
-        }).addTo(mymap);
+            // iterate through the array 
+            json["data"].forEach(function (row, index) {
+                const lat = row[row.length - 2]
+                const long = row[row.length - 1]
 
-        var circle = L.circle([40.675494798, -73.9006513169999], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 200,
-            stroke: false
-        }).addTo(mymap);
-
-        var circle = L.circle([40.67134926, -73.8995868349999], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 200,
-            stroke: false
-        }).addTo(mymap);
-
-        var circle = L.circle([40.673858545, -73.9002283589999], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 200,
-            stroke: false
-        }).addTo(mymap);
-
-        var circle = L.circle([40.747399795, -73.8862523659999]).addTo(mymap);
-        var circle = L.circle([40.68764616, -73.98161194]).addTo(mymap);
-        var circle = L.circle([40.74642676, -73.88762904]).addTo(mymap);
-        var circle = L.circle([40.74642676, -73.88762904]).addTo(mymap);
-        var circle = L.circle([40.74793535, -73.88113743]).addTo(mymap);
+                var circle = L.circle([lat, long], {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.1,
+                    radius: 100,
+                    stroke: false
+                }).addTo(mymap);
+            })
+        });
     </script>
 
     <script src="" async defer></script>
