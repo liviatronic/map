@@ -45,7 +45,7 @@
         }).addTo(mymap);
 
         // access the json data file
-        $.getJSON("/assets/nypd.json", function (json) {
+        $.getJSON("./assets/nypd.json", function (json) {
 
             // iterate through the array 
             json["data"].forEach(function (row, index) {
