@@ -37,14 +37,15 @@
         var mymap = L.map('mapid').setView([40.7128, -74.0060], 11.2);
 
         // add a tile layer from mapbox
-        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-            id: 'mapbox.streets',
-            accessToken: 'pk.eyJ1IjoibGl2aWF0cm9uaWMiLCJhIjoiNmtHZGN4YyJ9.NqfhK8hqkAZnL1Vr_OuZjQ'
-        }).addTo(mymap);
+        L.tileLayer(
+            'https://api.mapbox.com/styles/v1/liviatronic/ck1wypjgi1bwv1cs062fslcml/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGl2aWF0cm9uaWMiLCJhIjoiNmtHZGN4YyJ9.NqfhK8hqkAZnL1Vr_OuZjQ', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 18,
+                id: 'mapbox.streets',
+                accessToken: 'pk.eyJ1IjoibGl2aWF0cm9uaWMiLCJhIjoiNmtHZGN4YyJ9.NqfhK8hqkAZnL1Vr_OuZjQ'
+            }).addTo(mymap);
 
-        // access the json data file
+        // access the nypd json data
         $.getJSON("./assets/nypd.json", function (json) {
 
             // iterate through the array 
@@ -60,6 +61,15 @@
                     stroke: false
                 }).addTo(mymap);
             })
+        });
+
+        // get the poverty json data
+        $.getJSON("./assets/poverty.json", function (json) {
+            console.log(json);
+
+            $.each(json["data"], function (key, val) {
+                console.log(val);
+            });
         });
     </script>
 
