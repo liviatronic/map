@@ -52,24 +52,57 @@
             json["data"].forEach(function (row, index) {
                 const lat = row[row.length - 2]
                 const long = row[row.length - 1]
+                const race = row[row.length - 5]
+
+                const raceMarkerDictionary = {
+                    "BLACK": "red",
+                    "WHITE HISPANIC": "purple",
+                    "WHITE": "white",
+                    "ASIAN": "red",
+                    "ASIAN / PACIFIC ISLANDER": "blue"
+                }
+
+                var color = raceMarkerDictionary[race] ||
+                    "black" // default to black if race not in raceMarkerDictionary
 
                 var circle = L.circle([lat, long], {
-                    color: 'red',
-                    fillColor: '#f03',
-                    fillOpacity: 0.1,
+                    color: color,
+                    fillColor: color,
+                    fillOpacity: 0.05,
                     radius: 100,
                     stroke: false
                 }).addTo(mymap);
             })
         });
 
-        // get the poverty json data
-        $.getJSON("./assets/poverty.json", function (json) {
-            console.log(json);
+        // get the poverty geojson data
+        $.getJSON("./assets/districts.geojson", function (json) {
+            L.geoJSON(json, {
+                style: function (feature) {
+                    const poverty = feature.properties.poverty
+                    console.log(poverty);
+                    var color = "#feedde";
 
-            $.each(json["data"], function (key, val) {
-                console.log(val);
-            });
+                    // add if statement here to re-assign color depending on the poverty
+                    if (poverty >= 30) {
+                        color = "#a63603";
+                    } else if (poverty >= 25) {
+                        color = "#e6550d";
+                    } else if (poverty >= 20) {
+                        color = "#fd8d3c";
+                    } else if (poverty >= 15) {
+                        color = "#fdbe85";
+                    }
+                    console.log(poverty);
+
+                    // you can also add different styles under fillColor to change how the district is rendered
+                    return {
+                        fillColor: color,
+                        stroke: false,
+                        fillOpacity: 0.3
+                    }
+                },
+            }).addTo(mymap);
         });
     </script>
 
