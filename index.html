@@ -45,7 +45,7 @@
                 accessToken: 'pk.eyJ1IjoibGl2aWF0cm9uaWMiLCJhIjoiNmtHZGN4YyJ9.NqfhK8hqkAZnL1Vr_OuZjQ'
             }).addTo(mymap);
 
-        // access the nypd json data
+        // access the nypd arrest json data
         $.getJSON("./assets/nypd.json", function (json) {
 
             // iterate through the array 
@@ -57,8 +57,9 @@
                 const raceMarkerDictionary = {
                     "BLACK": "red",
                     "WHITE HISPANIC": "purple",
+                    "BLACK HISPANIC": "purple",
                     "WHITE": "white",
-                    "ASIAN": "red",
+                    "ASIAN": "green",
                     "ASIAN / PACIFIC ISLANDER": "blue"
                 }
 
@@ -75,35 +76,75 @@
             })
         });
 
-        // get the poverty geojson data
-        $.getJSON("./assets/districts.geojson", function (json) {
-            L.geoJSON(json, {
-                style: function (feature) {
-                    const poverty = feature.properties.poverty
-                    console.log(poverty);
-                    var color = "#feedde";
+        // get the income by census tract data
+        $.getJSON("./assets/tract_income.json", function (json) {
+            var tractIncomeDictionary = {}
 
-                    // add if statement here to re-assign color depending on the poverty
-                    if (poverty >= 30) {
-                        color = "#a63603";
-                    } else if (poverty >= 25) {
-                        color = "#e6550d";
-                    } else if (poverty >= 20) {
-                        color = "#fd8d3c";
-                    } else if (poverty >= 15) {
-                        color = "#fdbe85";
-                    }
-                    console.log(poverty);
+            $.each(json, function (key, val) {
+                const tract = val.tract_edit
+                const income = val.Household_Income_rP_gP_p25
+                tractIncomeDictionary[tract] = income
+            });
 
-                    // you can also add different styles under fillColor to change how the district is rendered
-                    return {
-                        fillColor: color,
-                        stroke: false,
-                        fillOpacity: 0.3
+            // get the census tract geojson data
+            $.getJSON("./assets/tracts.geojson", function (json) {
+                L.geoJSON(json, {
+                    style: function (feature) {
+                        const mytract = feature.properties.CT2010
+                        console.log(tractIncomeDictionary[mytract]);
+                        var color = "white";
+                        // add if statement here to re-assign color depending on the poverty
+                        if (tractIncomeDictionary[mytract] <= 20000) {
+                            color = "red";
+                        } else if (tractIncomeDictionary[mytract] <= 25000) {
+                            color = "orange";
+                        } else if (tractIncomeDictionary[mytract] <= 30000) {
+                            color = "pink";
+                        } else if (tractIncomeDictionary[mytract] <= 35000) {
+                            color = "green";
+                        } else if (tractIncomeDictionary[mytract] <= 40000) {
+                            color = "blue";
+                        }
+                        // you can also add different styles under fillColor to change how the district is rendered
+                        return {
+                            fillColor: color,
+                            stroke: false,
+                            fillOpacity: 1
+                        }
                     }
-                },
-            }).addTo(mymap);
+                }).addTo(mymap);
+            });
         });
+
+        // get the district geojson data
+        // $.getJSON("./assets/districts.geojson", function (json) {
+        //     L.geoJSON(json, {
+        //         style: function (feature) {
+        //             const poverty = feature.properties.poverty
+        //             console.log(poverty);
+        //             var color = "#feedde";
+
+        //             // add if statement here to re-assign color depending on the poverty
+        //             if (poverty >= 30) {
+        //                 color = "#a63603";
+        //             } else if (poverty >= 25) {
+        //                 color = "#e6550d";
+        //             } else if (poverty >= 20) {
+        //                 color = "#fd8d3c";
+        //             } else if (poverty >= 15) {
+        //                 color = "#fdbe85";
+        //             }
+        //             console.log(poverty);
+
+        //             // you can also add different styles under fillColor to change how the district is rendered
+        //             return {
+        //                 fillColor: color,
+        //                 stroke: false,
+        //                 fillOpacity: 0.3
+        //             }
+        //         },
+        //     }).addTo(mymap);
+        // });
     </script>
 
     <script src="" async defer></script>
