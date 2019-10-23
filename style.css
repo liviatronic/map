@@ -204,6 +204,13 @@ a:hover {
     text-decoration: underline;
 }
 
+.leaflet-control-attribution {
+    font-family: 'DM Sans';
+    color: #29614e;
+    font-size: 10px;
+    opacity: .9;
+}
+
 .leaflet-control-attribution a {
     color: #777;
 }
