@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Map test</title>
+    <title>“Walking While Trans” Arrests</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
@@ -23,27 +23,43 @@
     <script src="app.js"></script>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=DM+Sans:400,700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="./assets/favicon.png">
 </head>
 
 <body>
-    <div class=wrap>
-        <h1>“Walking While Trans” Arrests, <div class="reg">2006-present</div>
-        </h1>
+    <div class="main">
+        <h1>“Walking While Trans” Arrests</h1>
+        <h1 class="italic">2006-present</h1>
     </div>
     <div id="mapid"></div>
 
     <script>
         // initialize the map and set its center point and zoom level
-        var mymap = L.map('mapid').setView([40.7128, -74.0060], 11.2);
+        var mymap = L.map('mapid').setView([40.7500, -73.9990], 11.4);
 
-        // add a tile layer from mapbox
-        L.tileLayer(
-            'https://api.mapbox.com/styles/v1/liviatronic/ck1wypjgi1bwv1cs062fslcml/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGl2aWF0cm9uaWMiLCJhIjoiNmtHZGN4YyJ9.NqfhK8hqkAZnL1Vr_OuZjQ', {
+        // add base tile layer from mapbox
+        mymap.createPane('labels');
+        mymap.getPane('labels').style.zIndex = 650;
+
+        const baseLayer = L.tileLayer(
+            'https://api.mapbox.com/styles/v1/liviatronic/ck22eob2uekvx1cnlsqgxdinc/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGl2aWF0cm9uaWMiLCJhIjoiNmtHZGN4YyJ9.NqfhK8hqkAZnL1Vr_OuZjQ', {
                 attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
                 maxZoom: 18,
                 id: 'mapbox.streets',
                 accessToken: 'pk.eyJ1IjoibGl2aWF0cm9uaWMiLCJhIjoiNmtHZGN4YyJ9.NqfhK8hqkAZnL1Vr_OuZjQ'
             }).addTo(mymap);
+
+
+        // add label tile layer from mapbox
+        L.tileLayer(
+            'https://api.mapbox.com/styles/v1/liviatronic/ck22gbmaw3hjr1ck05c9mkqgh/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGl2aWF0cm9uaWMiLCJhIjoiNmtHZGN4YyJ9.NqfhK8hqkAZnL1Vr_OuZjQ', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 18,
+                id: 'mapbox.streets',
+                accessToken: 'pk.eyJ1IjoibGl2aWF0cm9uaWMiLCJhIjoiNmtHZGN4YyJ9.NqfhK8hqkAZnL1Vr_OuZjQ',
+                pane: 'labels'
+            }).addTo(mymap);
+
 
         // access the nypd arrest json data
         $.getJSON("./assets/nypd.json", function (json) {
@@ -58,9 +74,9 @@
                     "BLACK": "red",
                     "WHITE HISPANIC": "purple",
                     "BLACK HISPANIC": "purple",
-                    "WHITE": "white",
+                    "WHITE": "blue",
                     "ASIAN": "green",
-                    "ASIAN / PACIFIC ISLANDER": "blue"
+                    "ASIAN / PACIFIC ISLANDER": "green"
                 }
 
                 var color = raceMarkerDictionary[race] ||
@@ -70,7 +86,7 @@
                     color: color,
                     fillColor: color,
                     fillOpacity: 0.05,
-                    radius: 100,
+                    radius: 150,
                     stroke: false
                 }).addTo(mymap);
             })
@@ -88,64 +104,95 @@
 
             // get the census tract geojson data
             $.getJSON("./assets/tracts.geojson", function (json) {
-                L.geoJSON(json, {
+                const incomeLayer = L.geoJSON(json, {
                     style: function (feature) {
                         const mytract = feature.properties.CT2010
-                        console.log(tractIncomeDictionary[mytract]);
                         var color = "white";
                         // add if statement here to re-assign color depending on the poverty
-                        if (tractIncomeDictionary[mytract] <= 20000) {
-                            color = "red";
+                        if (tractIncomeDictionary[mytract] <= 23000) {
+                            color = "#F354FC";
+                        } else if (tractIncomeDictionary[mytract] <= 24000) {
+                            color = "#F467FC";
                         } else if (tractIncomeDictionary[mytract] <= 25000) {
-                            color = "orange";
+                            color = "#F67AFD";
+                        } else if (tractIncomeDictionary[mytract] <= 26000) {
+                            color = "#F78DFD";
+                        } else if (tractIncomeDictionary[mytract] <= 27000) {
+                            color = "#F8A0FD";
+                        } else if (tractIncomeDictionary[mytract] <= 28000) {
+                            color = "#FAB3FE";
+                        } else if (tractIncomeDictionary[mytract] <= 29000) {
+                            color = "#FBC6FE";
                         } else if (tractIncomeDictionary[mytract] <= 30000) {
-                            color = "pink";
-                        } else if (tractIncomeDictionary[mytract] <= 35000) {
-                            color = "green";
-                        } else if (tractIncomeDictionary[mytract] <= 40000) {
-                            color = "blue";
+                            color = "#FCD9FE";
+                        } else if (tractIncomeDictionary[mytract] <= 31000) {
+                            color = "#FEECFF";
+                        } else if (tractIncomeDictionary[mytract] > 32000) {
+                            color = "#FFFFFF";
                         }
                         // you can also add different styles under fillColor to change how the district is rendered
                         return {
                             fillColor: color,
                             stroke: false,
-                            fillOpacity: 1
+                            fillOpacity: .5
                         }
                     }
                 }).addTo(mymap);
+                incomeLayer.bringToBack();
             });
         });
-
-        // get the district geojson data
-        // $.getJSON("./assets/districts.geojson", function (json) {
-        //     L.geoJSON(json, {
-        //         style: function (feature) {
-        //             const poverty = feature.properties.poverty
-        //             console.log(poverty);
-        //             var color = "#feedde";
-
-        //             // add if statement here to re-assign color depending on the poverty
-        //             if (poverty >= 30) {
-        //                 color = "#a63603";
-        //             } else if (poverty >= 25) {
-        //                 color = "#e6550d";
-        //             } else if (poverty >= 20) {
-        //                 color = "#fd8d3c";
-        //             } else if (poverty >= 15) {
-        //                 color = "#fdbe85";
-        //             }
-        //             console.log(poverty);
-
-        //             // you can also add different styles under fillColor to change how the district is rendered
-        //             return {
-        //                 fillColor: color,
-        //                 stroke: false,
-        //                 fillOpacity: 0.3
-        //             }
-        //         },
-        //     }).addTo(mymap);
-        // });
     </script>
+
+    <div class="main">
+        <p>This map shows all arrests under New York Penal Law Section 240.37, the alleged crime of “loitering for the
+            purpose of prostitution,” of black
+            <svg height="30" width="30">
+                <circle cx="15" cy="15" r="15" fill="red" />
+                Sorry, your browser does not support inline SVG.
+            </svg>
+            , hispanic
+            <svg height="30" width="30">
+                <circle cx="15" cy="15" r="15" fill="purple" />
+                Sorry, your browser does not support inline SVG.
+            </svg>, white
+            <svg height="30" width="30">
+                <circle cx="15" cy="15" r="15" fill="blue" />
+                Sorry, your browser does not support inline SVG.
+            </svg>, and Asian
+            <svg height="30" width="30">
+                <circle cx="15" cy="15" r="15" fill="green" />
+                Sorry, your browser does not support inline SVG.
+            </svg> people in New York from 2006 to the present.</p>
+        <p>It also uses color to show areas of poverty. Areas where the average household income was $23K or less <svg
+                height="30" width="30">
+                <rect width="30" height="30" fill="#F354FC" />
+                Sorry, your browser does not support inline SVG.
+            </svg> are darker, and areas where income is $32K or more <svg height="30" width="30">
+                <rect width="30" height="30" fill="#FFF" stroke-width="1" stroke="gray" />
+                Sorry, your browser does not support inline SVG.
+            </svg> are transparent.</p>
+        <p>This notorious “walking while trans” law, first passed in 1976, is “an archaic anti-loitering law that has
+            led law enforcement to engage in widespread profiling and harassment of the transgender and gender
+            non-conforming (TGNC) community across the state,” according to a <a
+                href="https://www.scribd.com/document/413148886/Civil-Rights-Groups-Advocacy-Letter#from_embed">letter</a>
+            co-signed by 34 national and state
+            civil rights organizations, including the Center for Constitutional Rights, the National Women’s Law Center
+            and the American Civil Liberties Union of New York.</p>
+        <p>The law’s language is vague, and police often cite women’s clothing as evidence that they’re engaging in
+            prostitution. Kate Mogulescu, a supervising attorney in the Legal Aid Society’s Criminal Defense Practice,
+            <a
+                href="https://www.villagevoice.com/2016/11/22/the-nypd-arrests-women-for-who-they-are-and-where-they-go-now-theyre-fighting-back/">explained</a>
+            to reporter Melissa Gira Grant that enforcement is “arbitrary and targeted and abusive,” and
+            likens it to stop-and-frisk. “There is no other law that I can think of that gives the police that much
+            power and discretion,” Mogulescu said. “What you see is simply identity-based policing.”</p>
+        <p><a href="https://www.decrimny.org/advocacy">Decrim NY</a> is currently advocating for the law’s repeal via a
+            <a href="https://www.nysenate.gov/legislation/bills/2019/s2253">Senate Bill</a> and <a
+                href="https://www.nysenate.gov/legislation/bills/2019/a654">Assembly Bill</a>.</p>
+        <div class="credits italic">Arrest data via <a
+                href="https://data.cityofnewyork.us/Public-Safety/NYPD-Arrest-Data-Year-to-Date-/uip8-fykc/data">NYC
+                Open Data</a><br>Economic data via <a href="https://www.opportunityatlas.org/">Opportunity Atlas</a>
+        </div>
+    </div>
 
     <script src="" async defer></script>
 </body>
