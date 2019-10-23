@@ -165,7 +165,7 @@ table {
 
 #mapid {
     width: 100vw;
-    height: 70vh;
+    height: 68vh;
 }
 
 body {
@@ -212,6 +212,10 @@ a:hover {
     margin: 0 auto;
     padding: 3vw;
     max-width: 750px;
+}
+
+.head {
+    margin: 2vw;
 }
 
 svg {
